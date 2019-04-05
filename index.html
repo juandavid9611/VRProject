@@ -16,6 +16,8 @@
 
       let effect;
       let controls;
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
       var scene = new THREE.Scene();
       var aspect = window.innerWidth / window.innerHeight;
       var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
@@ -25,43 +27,51 @@
       document.body.appendChild( renderer.domElement );
 
       var loader = new THREE.TextureLoader();
-		  var suntexture = loader.load("images.png");
+      loader.setCrossOrigin(null)
+      var suntexture = loader.load("deathstar.png");
 
       var sun_material = new THREE.MeshPhongMaterial({
-		  color: 0xaaaaaa,
+		  color: 0x3794cf,
 		  specular: 0x333333,
 		  shininess: 15,
-		  map: suntexture		  
+      map: suntexture  
 		});
 
 
       var geometrypiso = new THREE.BoxGeometry( 900, 1, 300 );
-      var meta_material = new THREE.MeshNormalMaterial();
-      var piso = new THREE.Mesh(geometrypiso, meta_material)
+      var meta_material2 = new THREE.MeshLambertMaterial( { color: 0x67e71e } );
+      var piso = new THREE.Mesh(geometrypiso, meta_material2)
       piso.position.x = 0
       piso.position.y = -20
       scene.add(piso)
 
+      var geometrytecho = new THREE.BoxGeometry( 1900, 1, 1300 );
+      var techo = new THREE.Mesh(geometrytecho, meta_material2)
+      techo.position.x = 0
+      techo.position.y = 100
+      scene.add(techo)
+
       var geometrypared1 = new THREE.BoxGeometry( 1, 120, 300 );
-        var wall1 = new THREE.Mesh(geometrypared1, sun_material)
-        wall1.position.x = 450
-        wall1.position.y = 0
-        scene.add(wall1)
+      var meta_material = new THREE.MeshLambertMaterial( { color: 0x8142fa } );
+      var wall1 = new THREE.Mesh(geometrypared1, meta_material)
+      wall1.position.x = 250
+      wall1.position.y = 0
+      scene.add(wall1)
       
       var geometrypared2 = new THREE.BoxGeometry( 1, 120, 300 );
-      var wall2 = new THREE.Mesh(geometrypared2, sun_material)
-      wall2.position.x = -450
+      var wall2 = new THREE.Mesh(geometrypared2, meta_material)
+      wall2.position.x = -250
       wall2.position.y = 0
       scene.add(wall2)
 
       var geometrypared3 = new THREE.BoxGeometry( 900, 120, 1 );
-      var wall3 = new THREE.Mesh(geometrypared3, sun_material)
+      var wall3 = new THREE.Mesh(geometrypared3, meta_material)
       wall3.position.z = 150
       wall3.position.y = 0
       scene.add(wall3)
 
       var geometrypared4 = new THREE.BoxGeometry( 900, 120, 1 );
-      var wall4 = new THREE.Mesh(geometrypared4, sun_material)
+      var wall4 = new THREE.Mesh(geometrypared4, meta_material)
       wall4.position.z = -150
       wall4.position.y = 0
       scene.add(wall4)
@@ -80,25 +90,163 @@
       // wall4.position.y = 20
       // scene.add(wall4)
 
-      var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+      /*var geometry = new THREE.BoxGeometry( 20, 20, 20 );
       var material = new THREE.MeshNormalMaterial();
       var cube = new THREE.Mesh( geometry, material );
-      scene.add( cube );
-      camera.position.z = 5;
+      cube.position.x = 50
+      cube.position.y = 50
+      cube.name = "b1";
+      scene.add( cube );      
+      camera.position.z = 5;*/
+
+      //Block 1
+      var block1geometry = new THREE.BoxGeometry( 1, 120, 60 );
+      var materialblock = new THREE.MeshLambertMaterial( { color: 0x814200 } );
+      var block1 = new THREE.Mesh( block1geometry, materialblock );
+      block1.position.x = 249
+      block1.position.y = -18
+      block1.position.z = 10
+      block1.name = "block1";
+      scene.add( block1 );
+
+      //Block 2
+      var block2geometry = new THREE.BoxGeometry( 1, 120, 60 );
+      var materialblock2 = new THREE.MeshLambertMaterial( { color: 0x814200 } );
+      var block2 = new THREE.Mesh( block2geometry, materialblock2 );
+      block2.position.x = -249
+      block2.position.y = -18
+      block2.position.z = 10
+      block2.name = "block2";
+      scene.add( block2 );
+
+      //Block 3
+      var block3geometry = new THREE.BoxGeometry( 60, 120, 1 );
+      var materialblock3 = new THREE.MeshLambertMaterial( { color: 0x814200 } );
+      var block3 = new THREE.Mesh( block3geometry, materialblock3 );
+      block3.position.x = 0
+      block3.position.y = -18
+      block3.position.z = -149
+      block3.name = "block3";
+      scene.add( block3 );
+
+      //Block 4
+      var block4geometry = new THREE.BoxGeometry( 60, 120, 1 );
+      var materialblock4 = new THREE.MeshLambertMaterial( { color: 0x814200 } );
+      var block4 = new THREE.Mesh( block4geometry, materialblock4 );
+      block4.position.x = 0
+      block4.position.y = -18
+      block4.position.z = 149
+      block4.name = "block4";
+      scene.add( block4 );
+
+      //Block 5
+      var block5geometry = new THREE.BoxGeometry( 70, 2, 70 );
+      var materialblock5 = new THREE.MeshLambertMaterial( { color: 0xfe0000 } );
+      var block5 = new THREE.Mesh( block5geometry, materialblock5 );
+      block5.name = "block5";
+      block5.position.y = -19
+      scene.add( block5 );
 
       effect = new THREE.StereoEffect( renderer );
 			effect.setSize( window.innerWidth, window.innerHeight );
 
       controls = new THREE.DeviceOrientationControls( camera );
 
+      var light = new THREE.AmbientLight(0xdddddd);
+      
+      scene.add(light)
+
+      var light2 = new THREE.PointLight( 0xffffff, 1 );
+      light2.position.set( 0, 99, 0 );
+      scene.add(light2)
+
+      function onMouseMove (event){
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+      }
+      t = 0;
+      x1 = 0;
+      x2 = 0;
+      x3 = 0;
+      x4 = 0;
+      x5 = 0;
+      var onoff = true
       var render = function () {
         requestAnimationFrame( render );
-        cube.rotation.x += 0.1;
-        cube.rotation.y += 0.1;
+        raycaster.setFromCamera( mouse, camera );
+
+        var intersects = raycaster.intersectObjects( scene.children);
+
+        
+        if (intersects.length > 0){
+          if (intersects[0].object.name == "b1"){
+            if (t > 120){
+              cube.rotation.x += 0.1;
+              cube.rotation.y += 0.1;      
+              t = 0
+            }
+            t++;
+          }
+          else if (intersects[0].object.name == "block1"){
+            if (x1 > 120){
+              camera.position.x = block1.position.x - 5      
+              camera.position.z = block1.position.z
+              x1 = 0;
+            }
+            x1++;
+          }
+          else if (intersects[0].object.name == "block2"){
+            if (x2 > 120){
+              camera.position.x = block2.position.x + 5
+              camera.position.z = block2.position.z
+              x2 = 0
+            }
+            x2++;
+          }
+          else if (intersects[0].object.name == "block3"){
+            if (x3 > 120){
+              camera.position.z = block3.position.z + 5
+              camera.position.x = block3.position.x
+              x3 = 0;
+            }
+            x3++;
+          }
+          else if (intersects[0].object.name == "block4"){
+            if (x4 > 120){
+              camera.position.z = block4.position.z - 5
+              camera.position.x = block4.position.x
+              x4 = 0;
+            }
+            x4++;
+          }
+          else if (intersects[0].object.name == "block5"){
+            if (x5 > 120){
+              camera.position.z = block5.position.z
+              camera.position.x = block5.position.x
+              light2.visible = !light2.visible
+              if (onoff){
+                var light = new THREE.AmbientLight(0x464707);  
+                light2.visible = false
+                onoff = false
+              }else{
+                var light = new THREE.AmbientLight(0xdddddd);  
+                light2.visible = true
+                onoff = true
+              }
+              x5 = 0;
+            }
+            x5++;
+          }
+        }else{t = 0;x1 = 0; x2 = 0; x3 = 0; x4 = 0; x5 = 0}
+
+        
         //renderer.render( scene, camera );
         controls.update();
         effect.render( scene, camera );
+
+        t++;
       };
+      //window.addEventListener('mousemove', onMouseMove, false)
 
       render();
 
