@@ -147,6 +147,26 @@
       block5.position.y = -19
       scene.add( block5 );
 
+      //Block 6
+      var block6geometry = new THREE.BoxGeometry( 35, 35, 2 );
+      var materialblock6 = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+      var block6 = new THREE.Mesh( block6geometry, materialblock6 );
+      block6.name = "block6";
+      block6.position.x = 100
+      block6.position.y = 20
+      block6.position.z = -149
+      scene.add( block6 );
+
+      //Block 7
+      var block7geometry = new THREE.BoxGeometry( 35, 35, 2 );
+      var materialblock7 = new THREE.MeshLambertMaterial( { color: 0xffffff } );
+      var block7 = new THREE.Mesh( block7geometry, materialblock7 );
+      block7.name = "block7";
+      block7.position.x = -100
+      block7.position.y = 20
+      block7.position.z = 149
+      scene.add( block7 );
+
       effect = new THREE.StereoEffect( renderer );
 			effect.setSize( window.innerWidth, window.innerHeight );
 
@@ -170,7 +190,11 @@
       x3 = 0;
       x4 = 0;
       x5 = 0;
+      l1 = 0;
+      l2 = 0;
       var onoff = true
+
+
       var render = function () {
         requestAnimationFrame( render );
         raycaster.setFromCamera( mouse, camera );
@@ -191,6 +215,7 @@
             if (x1 > 120){
               camera.position.x = block1.position.x - 5      
               camera.position.z = block1.position.z
+              camera.lookAt(0,0,0);
               x1 = 0;
             }
             x1++;
@@ -199,6 +224,7 @@
             if (x2 > 120){
               camera.position.x = block2.position.x + 5
               camera.position.z = block2.position.z
+              camera.lookAt(0,0,0);
               x2 = 0
             }
             x2++;
@@ -207,6 +233,7 @@
             if (x3 > 120){
               camera.position.z = block3.position.z + 5
               camera.position.x = block3.position.x
+              camera.lookAt(0,0,0);
               x3 = 0;
             }
             x3++;
@@ -215,6 +242,7 @@
             if (x4 > 120){
               camera.position.z = block4.position.z - 5
               camera.position.x = block4.position.x
+              camera.lookAt(0,0,0);
               x4 = 0;
             }
             x4++;
@@ -223,6 +251,13 @@
             if (x5 > 120){
               camera.position.z = block5.position.z
               camera.position.x = block5.position.x
+              camera.lookAt(0,0,0);
+              x5 = 0;
+            }
+            x5++;
+          }
+          else if (intersects[0].object.name == "block6"){
+            if (l1 > 120){
               light2.visible = !light2.visible
               if (onoff){
                 var light = new THREE.AmbientLight(0x464707);  
@@ -233,11 +268,27 @@
                 light2.visible = true
                 onoff = true
               }
-              x5 = 0;
+              l1 = 0;
             }
-            x5++;
+            l1++;
           }
-        }else{t = 0;x1 = 0; x2 = 0; x3 = 0; x4 = 0; x5 = 0}
+          else if (intersects[0].object.name == "block7"){
+            if (l2 > 120){
+              light2.visible = !light2.visible
+              if (onoff){
+                var light = new THREE.AmbientLight(0x464707);  
+                light2.visible = false
+                onoff = false
+              }else{
+                var light = new THREE.AmbientLight(0xdddddd);  
+                light2.visible = true
+                onoff = true
+              }
+              l2 = 0;
+            }
+            l2++;
+          }
+        }else{t = 0;x1 = 0; x2 = 0; x3 = 0; x4 = 0; x5 = 0; l1 = 0; l2 = 0}
 
         
         //renderer.render( scene, camera );
